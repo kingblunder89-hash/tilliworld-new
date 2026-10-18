@@ -1,0 +1,10 @@
+name: TilliVerify
+version: 1.0.0
+main: ru.tilliworld.verify.TilliVerifyPlugin
+api-version: '1.16'
+description: Подтверждение владения Minecraft-аккаунтом для сайта Tilliworld
+commands:
+  tilliverify:
+    description: Подтвердить Minecraft-аккаунт кодом с сайта
+    usage: /tilliverify <код>
+    aliases: [tverify]

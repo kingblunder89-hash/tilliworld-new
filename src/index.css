@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ───────── Дизайн-система Tilliworld ─────────
+   Графитовая основа (ink), фиолетовый основной акцент (accent), электрический голубой (volt) — для второстепенных деталей.
+   Золотой (amber) закреплён за монетами, зелёный (emerald) — только за успешными состояниями. */
+@theme {
+  --font-sans: "Onest", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Unbounded", "Onest", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink-950: #09090d;
+  --color-ink-900: #0e0e15;
+  --color-ink-800: #14141d;
+  --color-ink-700: #1c1c28;
+  --color-ink-600: #282837;
+
+  --color-accent-200: #ddd6fe;
+  --color-accent-300: #c4b5fd;
+  --color-accent-400: #a78bfa;
+  --color-accent-500: #8b5cf6;
+  --color-accent-600: #7c3aed;
+  --color-accent-700: #6d28d9;
+
+  --color-volt-300: #7cc8ff;
+  --color-volt-400: #4cb0ff;
+  --color-volt-500: #2f9bff;
+
+  /* Мелкий вторичный текст: светлее стандартного slate-500, чтобы проходить контраст 4.5:1 на графите */
+  --color-slate-500: #8a96ab;
+
+  /* Скругления: элементы управления — block, карточки — rounded-2xl, окна — rounded-3xl */
+  --radius-block: 0.625rem;
+
+  --shadow-lift: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 12px 32px -16px rgb(0 0 0 / 0.7);
+  --shadow-glow: 0 0 0 1px rgb(139 92 246 / 0.4), 0 18px 48px -18px rgb(139 92 246 / 0.55);
+  --shadow-btn: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 8px 22px -10px rgb(124 58 237 / 0.85);
+
+  --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-pop: pop 0.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-menu: menu 0.18s ease-out both;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes menu {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; color-scheme: dark; }
+  body { @apply bg-ink-950 font-sans text-slate-200 antialiased; }
+  h1, h2, h3 { text-wrap: balance; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-accent-300; }
+  ::selection { background: rgb(139 92 246 / 0.4); color: #fff; }
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--color-accent-500); }
+}
+
+/* Плавная смена страниц: короткое появление содержимого, без движения у пользователей с reduced motion */
+.page-enter { animation: page-in 0.22s ease-out both; }
+
+/* Тонкая сетка для первого экрана и экрана входа: гаснет к краям */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 70% at 60% 40%, #000 30%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+@layer components {
+  /* Кнопки: общая основа и три варианта. Ссылки с этими классами работают так же, как <button>. */
+  .btn, .btn-primary, .btn-ghost, .btn-danger {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-block border px-5 text-[0.9375rem] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-150 select-none disabled:cursor-not-allowed disabled:opacity-50 [&:not(:disabled)]:active:translate-y-px;
+  }
+  .btn-primary { @apply border-accent-500/70 bg-accent-600 text-white shadow-btn [&:not(:disabled)]:hover:bg-accent-500; }
+  .btn-ghost { @apply border-white/12 bg-white/[0.03] text-slate-100 [&:not(:disabled)]:hover:border-white/20 [&:not(:disabled)]:hover:bg-white/[0.07]; }
+  .btn-danger { @apply border-red-400/40 bg-red-400/5 text-red-300 [&:not(:disabled)]:hover:bg-red-400/12; }
+
+  .card { @apply rounded-2xl border border-white/[0.08] bg-ink-800 shadow-lift; }
+
+  .input { @apply min-h-11 w-full rounded-block border border-white/12 bg-ink-900 px-3.5 text-slate-100 transition-colors placeholder:text-slate-500 hover:border-white/20 focus:border-accent-400 disabled:cursor-not-allowed disabled:opacity-60; }
+  select.input {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+  }
+  .label { @apply mb-1.5 block text-sm font-medium text-slate-300; }
+
+  /* Небольшая метка: категория, статус, значок */
+  .chip { @apply inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-xs font-medium text-slate-300; }
+
+  /* Сообщения об успехе, ошибке и предупреждении внутри форм и страниц */
+  .notice, .notice-error, .notice-warn, .notice-ok, .notice-info { @apply flex items-start gap-3 rounded-block border p-3 text-sm; }
+  .notice-error { @apply border-red-400/30 bg-red-400/10 text-red-200; }
+  .notice-warn { @apply border-amber-400/30 bg-amber-400/10 text-amber-200; }
+  .notice-ok { @apply border-emerald-400/30 bg-emerald-400/10 text-emerald-200; }
+  .notice-info { @apply border-accent-400/25 bg-accent-500/10 text-accent-200; }
+}
